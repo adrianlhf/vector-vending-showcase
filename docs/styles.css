@@ -166,7 +166,8 @@ button:disabled { cursor: default; }
 .purpose-grid article { border-top: 1px solid var(--line-light); padding-top: 1.25rem; }
 .purpose-tag { font-size: .6rem; }
 .purpose-grid h3 { margin-top: 2.8rem; font-size: clamp(1.5rem, 2.65vw, 2.8rem); font-weight: 500; letter-spacing: -.045em; line-height: 1.15; max-width: 13ch; }
-.purpose-grid p { max-width: 31ch; margin-top: 1.4rem; font-size: .8rem; line-height: 1.8; color: #40483c; }
+.purpose-grid p:not(.purpose-tag) { max-width: 31ch; margin-top: 1.4rem; font-size: .8rem; line-height: 1.8; color: #40483c; }
+.purpose-grid .purpose-tag { margin: 0; }
 
 .next-brand { padding: clamp(4rem, 7.2vw, 8rem) var(--gutter); background: #252a25; overflow: hidden; }
 .next-top { display: flex; justify-content: space-between; gap: 2rem; align-items: center; }
@@ -289,10 +290,10 @@ body.js-ready .reveal.is-visible { opacity: 1; transform: none; }
   .op-icon svg { width: 26px; height: 26px; }
   .operation-footer { max-width: 35ch; margin-left: auto; font-size: .57rem; text-align: right; }
   .purpose-grid { grid-template-columns: 1fr; gap: 2rem; margin-top: 3rem; }
-  .purpose-grid article { position: relative; display: grid; grid-template-columns: 62px 1fr; column-gap: 1.25rem; padding-top: 1rem; }
+  .purpose-grid article { position: relative; display: block; padding-top: 1rem; }
   .purpose-tag { font-size: .54rem; padding-top: .4rem; }
-  .purpose-grid h3 { margin: 0; font-size: 1.8rem; max-width: 17ch; }
-  .purpose-grid p { grid-column: 2; margin-top: 1rem; font-size: .75rem; max-width: 35ch; }
+  .purpose-grid h3 { margin-top: 1.4rem; font-size: 1.8rem; max-width: 20ch; }
+  .purpose-grid p:not(.purpose-tag) { margin-top: 1rem; font-size: .75rem; max-width: 35ch; }
   .next-brand { padding-top: 3rem; padding-bottom: 3.8rem; }
   .next-top { gap: .7rem; }
   .next-status { font-size: .5rem; letter-spacing: .04em; }
