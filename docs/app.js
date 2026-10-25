@@ -27,29 +27,7 @@
   });
   window.matchMedia('(min-width: 761px)').addEventListener('change', event => { if (event.matches) closeMenu(); });
 
-  // Keep all content readable if scripting or the observer API is unavailable.
-  const revealItems = document.querySelectorAll('.reveal');
-  if ('IntersectionObserver' in window && !reduceMotion.matches) {
-    document.body.classList.add('js-ready');
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if (!entry.isIntersecting) return;
-        entry.target.classList.add('is-visible');
-        observer.unobserve(entry.target);
-      });
-    }, { threshold: 0.12, rootMargin: '0px 0px -20px 0px' });
-    revealItems.forEach((element, index) => {
-      element.style.setProperty('--reveal-delay', `${Math.min(index % 3, 2) * 65}ms`);
-      observer.observe(element);
-    });
-    reduceMotion.addEventListener('change', event => {
-      if (event.matches) {
-        document.body.classList.remove('js-ready');
-        observer.disconnect();
-      }
-    });
-  }
-
+  // Content stays visible; motion is reserved for the verified sales counter.
   let ticking = false;
   const progress = document.querySelector('.scroll-progress');
   const updateScroll = () => {

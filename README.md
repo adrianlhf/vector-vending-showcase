@@ -2,11 +2,27 @@
 
 A buildless static site about Vector's work bringing familiar food brands into everyday places. The site uses local photography and fonts, with no analytics, cookies, signup forms or third-party runtime dependencies.
 
+Live site: https://vectorvending.pages.dev/
+
 ## Develop
 
 Requires Node 20 or later. `npm run dev` serves `docs/` at `http://127.0.0.1:4173`. `npm run check` validates links, assets, accessibility hooks, content constraints and the page-size budget.
 
-Deploy the contents of `docs/`. Relative paths support a GitHub Pages project URL. `.nojekyll` disables Jekyll processing. No installation or build step is required.
+Deploy the contents of `docs/` to a static host such as Cloudflare Pages. No installation or build step is required. Relative paths also preserve the existing GitHub Pages project URL; `.nojekyll` disables Jekyll processing there.
+
+Cloudflare project: `vectorvending` (free `pages.dev` hostname). Publish the checked-in `docs/` directory using the existing authorized Cloudflare session:
+
+```sh
+npx wrangler pages deploy docs --project-name vectorvending --branch main --force
+```
+
+No GitHub app permission changes or paid domain are required. Keep GitHub as the source of truth; this is a direct-upload Pages project, so future Cloudflare releases require the deploy command.
+
+## Responsive layout
+
+Content is bounded to 1280px on desktop. The hero pairs a readable introduction with a real Paya Lebar venue photograph and a compact Uncle Lee product card. At 760px and below, navigation becomes a disclosure menu and the content stacks. Body copy remains 15–17px, rather than shrinking with desktop proportions. The historical sales counter retains its prominent scale and attribution.
+
+Photography is reused from the authorized local assets; captions do not imply that Vector operates all brands visible at VENDI. The next brand remains masked.
 
 ## Content
 
