@@ -57,10 +57,13 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .product-arrow { color: var(--signal); font-size: 1.5rem; }
 .hero-product:hover { border-color: var(--signal); }
 .ticker { overflow: hidden; padding: .85rem 0; border-block: 1px solid var(--line-dark); }
-.ticker-track { display: flex; width: max-content; gap: 2.4rem; align-items: center; font-size: .6875rem; font-weight: 600; letter-spacing: .1em; animation: ticker 45s linear infinite; }
-.ticker-track > span, .ticker-track i { flex: none; }
-.ticker-track i { color: var(--signal); font-size: 1.2rem; font-style: normal; }
-.ticker:hover .ticker-track { animation-play-state: paused; }
+.ticker-track { display: flex; width: max-content; align-items: center; font-size: .6875rem; font-weight: 600; letter-spacing: .1em; }
+.ticker-track[data-ready] { animation: ticker var(--ticker-duration, 45s) linear infinite; }
+.ticker-group, .ticker-unit { display: flex; flex: none; align-items: center; }
+.ticker-group { min-width: 100vw; }
+.ticker-unit { gap: 2.4rem; padding-right: 2.4rem; white-space: nowrap; }
+.ticker-unit > span, .ticker-unit i { flex: none; }
+.ticker-unit i { color: var(--signal); font-size: 1.2rem; font-style: normal; }
 @keyframes ticker { to { transform: translateX(-50%); } }
 .story, .operations, .purpose, .next-brand, .contact { padding: 5.5rem var(--gutter); }
 .story { background: var(--paper); color: var(--ink); }
@@ -241,7 +244,7 @@ h3 { font-size: 1.75rem; font-weight: 500; line-height: 1.2; letter-spacing: -.0
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
-  .ticker-track { animation: none; }
+  .ticker-track[data-ready] { animation: none; }
 }
 @media print {
   body { background: white; color: black; }

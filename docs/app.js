@@ -27,6 +27,30 @@
   });
   window.matchMedia('(min-width: 761px)').addEventListener('change', event => { if (event.matches) closeMenu(); });
 
+  // Two identical, viewport-filling groups make the -50% reset invisible.
+  // The strip is decorative and its entire subtree is hidden from assistive technology.
+  const ticker = document.querySelector('.ticker');
+  const track = ticker.querySelector('.ticker-track');
+  const groups = [...track.querySelectorAll('.ticker-group')];
+  const unit = groups[0].querySelector('.ticker-unit');
+  let tickerSize = '';
+  const fillTicker = () => {
+    const unitWidth = unit.getBoundingClientRect().width;
+    if (!unitWidth) return;
+    const copies = Math.ceil(ticker.clientWidth / unitWidth) + 1;
+    const size = `${copies}:${unitWidth}`;
+    if (size === tickerSize) return;
+    tickerSize = size;
+    groups[0].replaceChildren(unit, ...Array.from({ length: copies - 1 }, () => unit.cloneNode(true)));
+    groups[1].replaceChildren(...Array.from(groups[0].children, child => child.cloneNode(true)));
+    track.style.setProperty('--ticker-duration', `${copies * unitWidth / 50}s`);
+    track.dataset.ready = '';
+  };
+  fillTicker();
+  if ('ResizeObserver' in window) new ResizeObserver(fillTicker).observe(ticker);
+  else window.addEventListener('resize', fillTicker, { passive: true });
+  document.fonts.ready.then(fillTicker);
+
   // Content stays visible; motion is reserved for the verified sales counter.
   let ticking = false;
   const progress = document.querySelector('.scroll-progress');
