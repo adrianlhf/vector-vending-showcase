@@ -33,3 +33,9 @@ Hypha was inspected as a design reference only. Publisher article images were no
 - Directory: Adrian's supplied location image, excluding OCBC, plus direct confirmation of two current Polar locations and the two upcoming 16 November Uncle Lee locations.
 - Machine visual is an original interactive CSS illustration, not a photograph of installed hardware.
 - Eatbook and Mothership links cover Uncle Lee Confectionery and are attributed accordingly.
+
+## Requested branding/contact revision
+- Official mall logos downloaded from the property/operator URLs recorded in mall-logo-provenance.json, used solely to identify listed venues. No mall endorsement claim.
+- Genuine ULC/Polar supplied logos identify each location's stocked brand; no invented alternate logo.
+- WhatsApp +65 9758 3546 is explicitly supplied by Adrian for public contact. Links only; no message sent.
+- Added Miss Tam Chiak coverage and official SME100 Singapore 2025 winner profile, explicitly partner recognition rather than a Vector award.
