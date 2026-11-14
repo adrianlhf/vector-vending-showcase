@@ -1,7 +1,5 @@
 node_modules/
+.next/
+out/
 .DS_Store
-qa/
-*.zip
-font-source.css
-.deps/
-source-assets/
+.env*

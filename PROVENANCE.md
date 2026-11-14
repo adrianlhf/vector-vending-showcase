@@ -26,3 +26,10 @@ The private folder URLs, chat transcripts and correspondence are deliberately ex
 Manrope font files are self-hosted from Google Fonts. The SIL Open Font License is retained in `docs/assets/Manrope-OFL.txt`. All layout, marks and motion code in this project were created for this site; no third-party animation/component code was copied.
 
 Hypha was inspected as a design reference only. Publisher article images were not reused.
+
+## 14 November 2026 launch
+- Additional genuine ULC cake photos and Polar product photos were located in Adrian's existing local business files by the asset investigator under the user-authorized website asset request. WebP derivatives are optimized from those source photos. No generated product imagery or publisher-owned photos are used.
+- Brand logos are existing official artwork supplied in the business files.
+- Directory: Adrian's supplied location image, excluding OCBC, plus direct confirmation of two current Polar locations and the two upcoming 16 November Uncle Lee locations.
+- Machine visual is an original interactive CSS illustration, not a photograph of installed hardware.
+- Eatbook and Mothership links cover Uncle Lee Confectionery and are attributed accordingly.
