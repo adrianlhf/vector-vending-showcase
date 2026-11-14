@@ -39,3 +39,10 @@ Hypha was inspected as a design reference only. Publisher article images were no
 - Genuine ULC/Polar supplied logos identify each location's stocked brand; no invented alternate logo.
 - WhatsApp +65 9758 3546 is explicitly supplied by Adrian for public contact. Links only; no message sent.
 - Added Miss Tam Chiak coverage and official SME100 Singapore 2025 winner profile, explicitly partner recognition rather than a Vector award.
+
+## Product collages and exact media logos
+- Brand-specific collages use only genuine existing ULC and Polar product photographs, no generated food imagery.
+- Mothership authentic white masthead: https://mothership.sg/assets/images/icons/svg/mothership-logo-white.svg
+- Miss Tam Chiak authentic inline logo SVG extracted from its official homepage https://www.misstamchiak.com/
+- SME100 official logo image https://sme100.asia/assets/images/logo-big-2026.png visually displays Awards 2025 despite filename; retained as authentic supplied artwork.
+- Eatbook official logo asset downloads returned 403. No bypass/retry; publisher remains plainly rendered text pending accessible authentic asset.
