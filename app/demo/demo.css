@@ -1090,6 +1090,12 @@
     max-width: 350px;
     flex-shrink: 0;
   }
+  /* The ambient glow previously extended 25% past each side of the machine.
+     Keep this decorative layer inside it rather than clipping the stage,
+     whose product, tray light and machine shadow must remain visible. */
+  .spotlight .theatre-glow {
+    inset-inline: 0;
+  }
   .spotlight .theatre-caption {
     flex-shrink: 0;
   }
