@@ -33,11 +33,14 @@ function Photo({
   className?: string;
   eager?: boolean;
 }) {
+  const imageRef = useRef<HTMLImageElement>(null);
   const [failed, setFailed] = useState(false);
   const [loaded, setLoaded] = useState(false);
   useEffect(() => {
     setFailed(false);
-    setLoaded(false);
+    setLoaded(
+      !!imageRef.current?.complete && imageRef.current.naturalWidth > 0,
+    );
   }, [file]);
   return (
     <span
@@ -50,6 +53,7 @@ function Photo({
         </span>
       ) : (
         <img
+          ref={imageRef}
           src={assetPath(file)}
           alt={alt}
           loading={eager ? "eager" : "lazy"}
