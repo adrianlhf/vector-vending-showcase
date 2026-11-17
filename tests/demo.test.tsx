@@ -149,7 +149,7 @@ describe("curated vending experience", () => {
     render(<Demo />);
     choose(machines[0].name);
     const tile = screen.getByRole("button", {
-      name: "Select Pandan Swiss Roll",
+      name: "Select Pandan Swiss Roll Slice",
     });
     fireEvent.error(tile.querySelector("img")!);
     expect(within(tile).getByRole("img", { name: "" })).toBeTruthy();
@@ -167,7 +167,7 @@ describe("curated vending experience", () => {
     await user.keyboard("{Enter}");
     expect(document.activeElement?.id).toBe("machine-title");
     const product = screen.getByRole("button", {
-      name: "Select Strawberry Swiss Roll",
+      name: "Select Strawberry Swiss Roll Slice",
     });
     product.focus();
     await user.keyboard(" ");
@@ -189,7 +189,7 @@ for (const machine of machines)
       await advance(150);
       expect(
         within(screen.getByRole("dialog")).getByRole("heading", {
-          name: new RegExp(product.name),
+          name: (name) => name.startsWith(product.name),
         }),
       ).toBeTruthy();
     });
@@ -324,4 +324,78 @@ it("narrow stage keeps keyboard focus on cancellation and Escape cancels prepara
   expect(
     screen.getByRole("button", { name: "Explore Polar Puffs & Cakes machine" }),
   ).toBeTruthy();
+});
+
+for (const machine of machines)
+  for (const product of machine.products)
+    it(`narrow full drop and correct hero image: ${machine.short} ${product.name}`, async () => {
+      narrowLayout();
+      render(<Demo />);
+      choose(machine.name);
+      fireEvent.click(
+        screen.getByRole("button", { name: `Select ${product.name}` }),
+      );
+      fireEvent.click(screen.getByRole("button", { name: "Dispense" }));
+      await advance(180);
+      expect(screen.queryByRole("dialog")).toBeNull();
+      const stage = screen.getByRole("region", {
+        name: "Virtual dispensing stage",
+      });
+      expect(
+        stage.querySelector(".travelling-product img")?.getAttribute("src"),
+      ).toBe("/assets/" + product.image);
+      await advance(2200);
+      expect(screen.queryByRole("dialog")).toBeNull();
+      await advance(850);
+      const hero = screen.getByRole("dialog");
+      expect(
+        within(hero).getByRole("heading", {
+          name: (name) => name.startsWith(product.name),
+        }),
+      ).toBeTruthy();
+      expect(
+        within(hero)
+          .getByRole("img", { name: product.name })
+          .getAttribute("src"),
+      ).toBe("/assets/" + product.image);
+      expect(
+        within(hero)
+          .getByRole("link", { name: /official brand site/ })
+          .getAttribute("href"),
+      ).toBe(product.source);
+      fireEvent.click(
+        within(hero).getByRole("button", { name: "Try another" }),
+      );
+    });
+it("exposes the full catalogue and resets list scrolling when changing formats or machines", () => {
+  render(<Demo />);
+  choose(machines[0].name);
+  const list = screen.getByLabelText("Polar Puffs & Cakes demo products");
+  expect(within(list).getAllByRole("button").length).toBe(19);
+  list.scrollTop = 500;
+  fireEvent.click(screen.getByRole("button", { name: "Mini cakes" }));
+  expect(list.scrollTop).toBe(0);
+  expect(within(list).getAllByRole("button").length).toBe(7);
+  fireEvent.click(
+    within(list).getByRole("button", {
+      name: "Select Cocoa Hazelnut Cake (Mini)",
+    }),
+  );
+  fireEvent.click(screen.getByRole("button", { name: "Whole rolls & blocks" }));
+  expect(within(list).getAllByRole("button").length).toBe(4);
+  expect(
+    screen.getByText("Cocoa Hazelnut Cake (Mini)", {
+      selector: ".selection-summary strong",
+    }),
+  ).toBeTruthy();
+  fireEvent.click(screen.getByRole("button", { name: "All" }));
+  expect(within(list).getAllByRole("button").length).toBe(19);
+  fireEvent.click(screen.getByRole("button", { name: "Switch machines" }));
+  choose(machines[1].name);
+  expect(
+    within(
+      screen.getByLabelText("Uncle Lee Confectionery demo products"),
+    ).getAllByRole("button").length,
+  ).toBe(4);
+  expect(screen.queryByRole("button", { name: "Mini cakes" })).toBeNull();
 });

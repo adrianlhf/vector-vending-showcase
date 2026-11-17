@@ -47,3 +47,59 @@ Regression coverage includes both narrow-screen machine sequences, repeated disp
 ## Narrow stage horizontal overflow correction
 
 Jarvis independently verified the stage/drop fix at 400 × 591 CSS pixels for both machines, replay, Cancel / switch and subsequent other-machine dispensing. The stage itself had scrollWidth 411 against width 400. Inspection found the ambient `.theatre-glow` used negative 25% horizontal insets, extending its layout box beyond the machine and into the stage's scrollable area. The spotlight now gives only that decorative glow zero horizontal insets. Stage overflow is not hidden or clipped; machine photography, product path, collection glow and machine shadow retain their existing geometry. Existing interaction checks and production build are rerun. Rendered scrollWidth confirmation and true touch testing remain for independent browser QA. Production is unchanged.
+
+
+## Expanded vending catalogue — 23 items
+
+The initial three products per brand were an editorial subset, not a UI restriction. The expanded preview contains **19 Polar products and 4 Uncle Lee products (23 total; 17 additions)**. This is a curated historical/supplier vending range, not a claim that all products are stocked in each machine. The interface continues to say **Selection varies by machine**, with no product prices, payment or order creation.
+
+### Range evidence and asset matching
+
+- Polar identities and SKU codes: supplied **2026-11-02 — Polar B2B Vending Catalogue — Revised.pdf**, headed “Vending Machine Proposed Item”. All 19 products in that proposed vending catalogue are included. The broader retail catalogue was used only to cross-check product families, not as authority to add retail-only items.
+- Polar photo matches: supplied **Product Photos** folder and **2026-10-05 — Polar Product Photos — Original Supplier ZIP.zip**. All 19 existing optimized WebP files were visually inspected together and matched to the supplier filenames/catalogue entries. Whole rolls and slices are separate records and use different matching photographs. Existing Polar assets are unchanged.
+- Uncle Lee: Kaya, Peanut and Chocolate retain supplied product photographs. Yam is visible in the actual Uncle Lee vending-machine artwork (alongside the original three), is named **Nostalgic Yam Cake - 6 inch** in the official storefront's public embedded catalogue, and has supplied **yam3.jpg** in **For SMRT (Adeline)**. Its new `demo/ulc-yam.webp` is an optimized derivative of that visually inspected photo; no generated product or changed packaging. The demo does not assume a machine-specific size.
+- The supplier spelling **Cocoa Hazelnut Cake (Mini)** is used in the interface. Its photo filename uses “Coco Hazelnut”; this spelling difference is recorded in its data review note.
+- No source prices, costs, margins, private documents or private correspondence are published.
+
+### Official cross-checks and description limits
+
+- https://polarpuffs-cakes.com/products/cakes/swiss-roll/ confirms the three whole-roll flavours and buttercream descriptions. Slice names/formats are independently supported by the vending catalogue; their copy avoids transferring unconfirmed recipe details.
+- https://polarpuffs-cakes.com/products/cakes/block-cakes/ and https://polarpuffs-cakes.com/products/three-layer-sponge/ establish the matching block families and the three named flavours of Three Layer Block.
+- https://polarpuffs-cakes.com/products/delightful-party-box-30-pcs/ independently identifies Marble Block Cake Slice. The party box itself is not added to the vending demo.
+- https://polarpuffs-cakes.com/products/cakes/whole-cakes/ cross-checks the matching mini-cake families and Brownie family. https://polarpuffs-cakes.com/products/tiramisu-3/ and https://polarpuffs-cakes.com/products/fairlady-6/ provide additional family checks. **Whole-cake ingredient/recipe descriptions are not assumed to apply to the supplied mini formats.** Mini cakes and uncertain slices therefore receive conservative product labels, with exact-format recipe gaps recorded in `catalogue.ts` review notes.
+- https://uncleleeconfectionery.cococart.co/shop confirms Yam identity in its public embedded catalogue. Detailed Yam, Peanut and Chocolate descriptions remain limited to verified names; no recipe, texture, filling, allergen or size claims are invented.
+- Uncle Lee Rainbow Chocolate remains excluded: prior vending references exist, but no matching verified photo was established in the inspected supplied product folder. Cookies, custard puffs, banana cakes and unrelated retail products are not added without vending-range evidence and a matching asset.
+
+### Included items and matching assets
+
+| Brand | Product | Supplier SKU | Image under `public/assets/` |
+| --- | --- | --- | --- |
+| Polar | Pandan Swiss Roll Slice | FGSLC-0000123 | `polar-pandan-swiss-roll-slice.webp` |
+| Polar | Strawberry Swiss Roll Slice | FGSLC-0000124 | `polar-strawberry-swiss-roll-slice.webp` |
+| Polar | Chocolate Swiss Roll Slice | FGSLC-0000121 | `polar-chocolate-swiss-roll-slice.webp` |
+| Polar | Chocolate Swiss Roll (Whole) | FGBLK-0000009 | `polar-swiss-roll-chocolate.webp` |
+| Polar | Pandan Swiss Roll (Whole) | FGBLK-0000011 | `polar-swiss-roll-pandan.webp` |
+| Polar | Strawberry Swiss Roll (Whole) | FGBLK-0000012 | `polar-swiss-roll-strawberry.webp` |
+| Polar | Three Layer Block Cake | FGBLK-0000014 | `polar-three-layer-block-cake.webp` |
+| Polar | Butter Cake Slice | FGSLC-0000007 | `polar-butter-slice.webp` |
+| Polar | Chocolate Brownie | FGSLC-0000213 | `polar-brownie-slice.webp` |
+| Polar | Marble Cake Slice | FGSLC-0000026 | `polar-marble-slice.webp` |
+| Polar | Fruit Cake Slice | FGSLC-0000021 | `polar-fruit-cake-slice.webp` |
+| Polar | Orange Sugee Slice | FGSLC-0000051 | `polar-orange-sugee-slice.webp` |
+| Polar | Blackforest Cake (Mini) | FGWCK-0000001-MIN | `polar-blackforest-cake-mini.webp` |
+| Polar | Tiramisu Cake (Mini) | FGWCK-0000049-MIN | `polar-tiramisu-cake-mini.webp` |
+| Polar | Chocolate Mousse Cake (Mini) | FGWCK-0000007-MIN | `polar-chocolate-mousse-cake-mini.webp` |
+| Polar | Fairlady Cake (Mini) | FGWCK-0000019-MIN | `polar-fairlady-cake-mini.webp` |
+| Polar | Cheese Cake (Mini) | FGWCK-0000027-MIN | `polar-cheese-cake-mini.webp` |
+| Polar | Cookies and Cream Cake (Mini) | FGWCK-0000017-MIN | `polar-cookie-and-cream-cake-mini.webp` |
+| Polar | Cocoa Hazelnut Cake (Mini) | FGWCK-0000029-MIN | `polar-coco-hazelnut-cake-mini.webp` |
+| Uncle Lee | Kaya Cake | — | `ulc-kaya.webp` |
+| Uncle Lee | Peanut Cake | — | `ulc-peanut.webp` |
+| Uncle Lee | Chocolate Cake | — | `ulc-chocolate.webp` |
+| Uncle Lee | Yam Cake | — | `demo/ulc-yam.webp` |
+
+### Expanded range validation
+
+Automated coverage selects every one of the 23 items on desktop and through the full narrow-stage preparation → drop → collection → hero → close sequence, checking the exact product image and official source link. Additional checks cover full-list access, all format filters, scroll-position reset, switching machines, replay/cancellation, asset existence, unique supplier identities and silent/reduced-motion behaviour. The desktop grid is bounded with internal scrolling; phone lists use ordinary document scrolling so the collection-stage fix remains important for items lower down. Existing animations, focused narrow stage and bounded decorative-glow correction are retained.
+
+Browser inventory was checked again and still returned `browsers: []` with `Browsers: Error: The browser access host is unavailable`. These interaction tests do not measure rendered grid geometry, overflow or touch behaviour. Independent rendered desktop/narrow-grid and scrolling checks remain pending; true touch is unverified. Only the feature preview is deployed; production remains unchanged.

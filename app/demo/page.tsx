@@ -68,6 +68,8 @@ function Photo({
 
 export default function Demo() {
   const [machineId, setMachineId] = useState<MachineId | null>(null);
+  const [productGroup, setProductGroup] = useState("All");
+  const productList = useRef<HTMLDivElement>(null);
   const [selectedId, setSelectedId] = useState("pandan");
   const [stage, setStage] = useState<Stage>("select");
   const [spotlight, setSpotlight] = useState(false);
@@ -94,6 +96,16 @@ export default function Demo() {
       description: "",
       source: "",
     };
+
+  const groups = Array.from(
+    new Set(machine.products.map((p) => p.group ?? "Cakes")),
+  );
+  const shownProducts = machine.products.filter(
+    (p) => productGroup === "All" || p.group === productGroup,
+  );
+  useEffect(() => {
+    if (productList.current) productList.current.scrollTop = 0;
+  }, [productGroup, machineId]);
 
   function clearTimer() {
     if (timer.current) clearTimeout(timer.current);
@@ -139,6 +151,7 @@ export default function Demo() {
   }, [showingDrop]);
 
   function choose(id: MachineId) {
+    setProductGroup("All");
     clearTimer();
     setStage("select");
     setMachineId(id);
@@ -448,14 +461,34 @@ export default function Demo() {
                   <p className="catalogue-intro">{machine.subtitle}</p>
                   <div className="catalogue-label">
                     <h2>The tasting selection</h2>
-                    <span>CURATED DEMO</span>
+                    <span>
+                      {machine.products.length} PRODUCTS · CURATED DEMO
+                    </span>
                   </div>
+                  {groups.length > 1 && (
+                    <div
+                      className="product-filters"
+                      aria-label="Filter product formats"
+                    >
+                      {["All", ...groups].map((group) => (
+                        <button
+                          key={group}
+                          aria-pressed={productGroup === group}
+                          disabled={stage !== "select"}
+                          onClick={() => setProductGroup(group)}
+                        >
+                          {group}
+                        </button>
+                      ))}
+                    </div>
+                  )}
                   <div
+                    ref={productList}
                     className="tasting-products"
                     aria-label={`${machine.name} demo products`}
                   >
                     {machine.products.length ? (
-                      machine.products.map((p, i) => (
+                      shownProducts.map((p, i) => (
                         <button
                           key={p.id}
                           className={`tasting-product ${selected.id === p.id ? "selected" : ""}`}
@@ -468,11 +501,16 @@ export default function Demo() {
                             file={p.image}
                             alt=""
                             className="tasting-photo"
-                            eager
+                            eager={i < 3}
                           />
                           <div>
                             <span className="product-index">
-                              0{i + 1} / {machine.short}
+                              {String(
+                                machine.products.findIndex(
+                                  (item) => item.id === p.id,
+                                ) + 1,
+                              ).padStart(2, "0")}{" "}
+                              / {machine.short}
                             </span>
                             <h3>{p.name}</h3>
                             <span className="selection-hint">
