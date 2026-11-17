@@ -32,3 +32,22 @@ describe("vending catalogue assets and provenance", () => {
     }
   });
 });
+
+it("maps Rainbow Chocolate to the verified extracted cake photo and approved generic copy", async () => {
+  const { createHash } = await import("node:crypto");
+  const { readFileSync } = await import("node:fs");
+  const rainbow = machines
+    .find((m) => m.id === "uncle")!
+    .products.find((p) => p.id === "rainbow-chocolate")!;
+  expect(machines.reduce((count, m) => count + m.products.length, 0)).toBe(24);
+  expect(rainbow.image).toBe("demo/ulc-rainbow-chocolate.webp");
+  expect(
+    createHash("sha256")
+      .update(readFileSync(resolve("public/assets", rainbow.image)))
+      .digest("hex"),
+  ).toBe("b96cf0fb98191f20adc241284eb16d052811748af371445f4ad4efd093499b71");
+  expect(rainbow.description).toBe(
+    "Uncle Lee's Rainbow Chocolate Cake, a colourful cake to discover in this virtual selection.",
+  );
+  expect(rainbow.source).toBe("https://uncleleeconfectionery.cococart.co/");
+});

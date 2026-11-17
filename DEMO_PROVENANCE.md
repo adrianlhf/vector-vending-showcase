@@ -103,3 +103,19 @@ The initial three products per brand were an editorial subset, not a UI restrict
 Automated coverage selects every one of the 23 items on desktop and through the full narrow-stage preparation → drop → collection → hero → close sequence, checking the exact product image and official source link. Additional checks cover full-list access, all format filters, scroll-position reset, switching machines, replay/cancellation, asset existence, unique supplier identities and silent/reduced-motion behaviour. The desktop grid is bounded with internal scrolling; phone lists use ordinary document scrolling so the collection-stage fix remains important for items lower down. Existing animations, focused narrow stage and bounded decorative-glow correction are retained.
 
 Browser inventory was checked again and still returned `browsers: []` with `Browsers: Error: The browser access host is unavailable`. These interaction tests do not measure rendered grid geometry, overflow or touch behaviour. Independent rendered desktop/narrow-grid and scrolling checks remain pending; true touch is unverified. Only the feature preview is deployed; production remains unchanged.
+
+
+## Rainbow Chocolate addition — 18 November 2026
+
+The preview now includes **24 products: 19 Polar and 5 Uncle Lee**, with **Rainbow Chocolate Cake** added to Kaya, Peanut, Chocolate and Yam. The earlier Rainbow asset gap is resolved; previous counts above describe earlier revisions.
+
+- Authorized source: **2026-10-29 — Uncle Lee Wonder Shop Product Info.docx**. Its Rainbow chocolate (vanilla sponge) table contains relationship `rId23`, resolving to `word/media/image9.jpg`. Original embedded JPEG dimensions verified: **3557 × 2339**. Original JPEG SHA-256: `c2ef19e1cb9a95441f4f4f951531c9a56bea6903b2187c80eddb3087dea1df0f`.
+- The original JPEG was extracted byte-for-byte, visually inspected as the genuine round cake covered in colourful sprinkles on a white background, and resized proportionally to 1200 × 789, then encoded as `public/assets/demo/ulc-rainbow-chocolate.webp`. No crop, food alteration, generative editing, recolouring or packaging changes. The private DOCX and private source links are excluded from the repository and deployment.
+- Jarvis's source notes map the image to the supplied **Buttercream cake rainbow.psd** artwork. That mapping is collaborator-supplied; a separate byte comparison against the PSD was not performed.
+- Vending identity cross-check: https://eatbook.sg/uncle-lee-vending-machine-suntec/ (2 January 2026) explicitly names Kaya Pandan, Peanut, Chocolate, Rainbow Chocolate and Nostalgic Yam Cake. This historical listing is used only as range evidence, never as live-stock evidence. The supplied installation artwork remains the real machine image; no artwork was altered to imply current stock.
+- Exact approved copy: **Uncle Lee's Rainbow Chocolate Cake, a colourful cake to discover in this virtual selection.** No size, stock or ingredients are inferred from the draft. The public product link remains the official Uncle Lee storefront; no private source link is placed in product data.
+- Existing data-driven desktop and narrow-screen tests now exercise all 24 records with matching drop/hero images and public source links. Added a focused Rainbow record/image integrity assertion. Existing animation, stage, category, scrolling and cancellation behaviour is preserved. “Selection varies by machine” remains in the interface, with no product prices.
+
+### Independent prior-23-item QA (reported by Jarvis)
+
+At **400 × 575 CSS pixels**, layout, category counts (**8 slices / 4 whole rolls and blocks / 7 minis**), Cocoa Hazelnut, Three Layer and Yam hero flows, and absence of stage overflow passed. These were independent checks of the prior 23-item preview, not rendered verification of the new Rainbow addition in this VS Code session. True touch remains unverified. Production is unchanged; feature-preview deployment only.

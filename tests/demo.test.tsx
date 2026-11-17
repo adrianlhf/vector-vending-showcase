@@ -396,6 +396,6 @@ it("exposes the full catalogue and resets list scrolling when changing formats o
     within(
       screen.getByLabelText("Uncle Lee Confectionery demo products"),
     ).getAllByRole("button").length,
-  ).toBe(4);
+  ).toBe(5);
   expect(screen.queryByRole("button", { name: "Mini cakes" })).toBeNull();
 });

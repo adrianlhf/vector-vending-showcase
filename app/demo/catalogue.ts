@@ -323,6 +323,19 @@ export const machines: Machine[] = [
         review:
           "Name verified in official storefront; detailed recipe and machine-specific size not inferred.",
       },
+      {
+        id: "rainbow-chocolate",
+        name: "Rainbow Chocolate Cake",
+        image: "demo/ulc-rainbow-chocolate.webp",
+        group: "Whole cakes",
+        description:
+          "Uncle Lee's Rainbow Chocolate Cake, a colourful cake to discover in this virtual selection.",
+        source: uncleSource,
+        rangeEvidence:
+          "Historical Suntec vending listing names Rainbow Chocolate; supplied product-information table confirms image identity.",
+        review:
+          "Generic label only. No size, recipe, ingredients or stock claims inferred from the draft source document.",
+      },
     ] satisfies Product[],
   },
 ];
