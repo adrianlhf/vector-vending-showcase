@@ -20,7 +20,7 @@ import {
 import { assetPath, machines, type MachineId, type Product } from "./catalogue";
 import "./demo.css";
 
-type Stage = "select" | "dispensing" | "ready" | "reveal";
+type Stage = "select" | "preparing" | "dispensing" | "ready" | "reveal";
 
 function Photo({
   file,
@@ -70,6 +70,8 @@ export default function Demo() {
   const [machineId, setMachineId] = useState<MachineId | null>(null);
   const [selectedId, setSelectedId] = useState("pandan");
   const [stage, setStage] = useState<Stage>("select");
+  const [spotlight, setSpotlight] = useState(false);
+  const theatre = useRef<HTMLDivElement>(null);
   const [sound, setSound] = useState(false);
   const [still, setStill] = useState(false);
   const [round, setRound] = useState(0);
@@ -121,6 +123,21 @@ export default function Demo() {
     }
   }, [stage]);
 
+  useEffect(() => {
+    if (stage === "preparing") theatre.current?.focus({ preventScroll: true });
+  }, [stage]);
+
+  const showingDrop =
+    spotlight && ["preparing", "dispensing", "ready"].includes(stage);
+  useEffect(() => {
+    if (!showingDrop) return;
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previous;
+    };
+  }, [showingDrop]);
+
   function choose(id: MachineId) {
     clearTimer();
     setStage("select");
@@ -164,23 +181,34 @@ export default function Demo() {
   function dispense(replaying = false) {
     if (busy.current || (stage !== "select" && !replaying)) return;
     busy.current = true;
-    setVendCount((n) => n + 1);
-    setStage("dispensing");
+    const narrow = window.matchMedia("(max-width: 700px)").matches;
+    setSpotlight(narrow);
     chime();
-    timer.current = setTimeout(
-      () => {
-        setStage("ready");
-        timer.current = setTimeout(
-          () => {
-            busy.current = false;
-            setStage("reveal");
-          },
-          quiet ? 150 : 850,
-        );
-      },
-      quiet ? 100 : 2200,
-    );
+    const startDrop = () => {
+      setVendCount((n) => n + 1);
+      setStage("dispensing");
+      timer.current = setTimeout(
+        () => {
+          setStage("ready");
+          timer.current = setTimeout(
+            () => {
+              busy.current = false;
+              setStage("reveal");
+            },
+            quiet ? 150 : 850,
+          );
+        },
+        quiet ? 100 : 2200,
+      );
+    };
+    if (narrow) {
+      // Mount and focus the viewport-sized stage before starting its drop clock.
+      // No animated scrolling: this also works with reduced motion and replay.
+      setStage("preparing");
+      timer.current = setTimeout(startDrop, 180);
+    } else startDrop();
   }
+
   function reset() {
     clearTimer();
     setStage("select");
@@ -191,21 +219,23 @@ export default function Demo() {
     dispense(true);
   }
   const status =
-    stage === "dispensing"
-      ? `Dispensing virtual ${selected.name}.`
-      : stage === "ready"
-        ? `${selected.name} has arrived in the collection area.`
-        : stage === "reveal"
-          ? `${selected.name} revealed. This is a simulation.`
-          : `${machine.short}: ${selected.name} selected. Ready to dispense.`;
+    stage === "preparing"
+      ? `Your virtual ${selected.name} is about to dispense.`
+      : stage === "dispensing"
+        ? `Dispensing virtual ${selected.name}.`
+        : stage === "ready"
+          ? `${selected.name} has arrived in the collection area.`
+          : stage === "reveal"
+            ? `${selected.name} revealed. This is a simulation.`
+            : `${machine.short}: ${selected.name} selected. Ready to dispense.`;
 
   return (
     <MotionConfig reducedMotion="user">
       <div className={`demo-page ${machineId ?? "choose"}`} data-still={quiet}>
-        <a className="skip" href="#experience">
+        <a inert={showingDrop} className="skip" href="#experience">
           Skip to experience
         </a>
-        <header className="demo-header">
+        <header inert={showingDrop} className="demo-header">
           <a className="wordmark" href="/" aria-label="Vector Vending home">
             vector<span>vending</span>
             <i />
@@ -282,7 +312,7 @@ export default function Demo() {
               className="experience-scene"
               aria-labelledby="machine-title"
             >
-              <div className="experience-toolbar">
+              <div inert={showingDrop} className="experience-toolbar">
                 <button className="plain-button" onClick={switchMachines}>
                   <Shuffle size={16} /> Switch machines
                 </button>
@@ -304,7 +334,38 @@ export default function Demo() {
                 </div>
               </div>
               <div className="experience-grid">
-                <div className="machine-theatre">
+                <div
+                  ref={theatre}
+                  onKeyDown={(event) => {
+                    if (!showingDrop) return;
+                    if (event.key === "Escape") {
+                      event.preventDefault();
+                      switchMachines();
+                    }
+                    if (event.key === "Tab") {
+                      event.preventDefault();
+                      theatre.current
+                        ?.querySelector<HTMLButtonElement>("button")
+                        ?.focus();
+                    }
+                  }}
+                  tabIndex={-1}
+                  role="region"
+                  aria-label="Virtual dispensing stage"
+                  className={`machine-theatre ${spotlight && ["preparing", "dispensing", "ready"].includes(stage) ? "spotlight" : ""}`}
+                >
+                  <div className="spotlight-controls">
+                    <span aria-live="polite">
+                      {stage === "preparing"
+                        ? "Your little moment is coming…"
+                        : stage === "ready"
+                          ? "Your treat has arrived."
+                          : "Watch your treat drop."}
+                    </span>
+                    <button className="plain-button" onClick={switchMachines}>
+                      <X size={18} /> Cancel / switch
+                    </button>
+                  </div>
                   <div className="theatre-heading">
                     <p className="eyebrow">THE {machine.number} EDITION</p>
                     <Photo
@@ -329,7 +390,7 @@ export default function Demo() {
                     <div className="virtual-path" aria-hidden="true">
                       <div className="virtual-shelf" />
                       <AnimatePresence>
-                        {stage !== "select" && (
+                        {["dispensing", "ready", "reveal"].includes(stage) && (
                           <motion.div
                             key={`${selected.id}-${vendCount}`}
                             className="travelling-product"
@@ -379,7 +440,7 @@ export default function Demo() {
                     </p>
                   </div>
                 </div>
-                <div className="catalogue-panel">
+                <div inert={showingDrop} className="catalogue-panel">
                   <p className="eyebrow">CHOOSE · DISPENSE · DISCOVER</p>
                   <h1 id="machine-title" ref={machineHeading} tabIndex={-1}>
                     {machine.line}
@@ -472,7 +533,7 @@ export default function Demo() {
             </section>
           )}
         </main>
-        <footer className="demo-footer">
+        <footer inert={showingDrop} className="demo-footer">
           <span>A little closer to the things you love.</span>
           <a href="/#locations">
             Find a real machine <ArrowRight size={14} />

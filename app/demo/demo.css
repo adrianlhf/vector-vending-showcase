@@ -1049,3 +1049,48 @@
     transform: none;
   }
 }
+
+/* A dedicated narrow-screen stage keeps the drop visible even when the
+   catalogue is far below the installation photograph. No scroll animation. */
+.spotlight-controls {
+  display: none;
+}
+@media (max-width: 700px) {
+  .machine-theatre.spotlight {
+    position: fixed;
+    inset: 0;
+    z-index: 90;
+    border: 0;
+    border-radius: 0;
+    padding: max(12px, env(safe-area-inset-top)) 20px
+      max(12px, env(safe-area-inset-bottom));
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow: auto;
+    outline: none;
+  }
+  .spotlight .spotlight-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+    gap: 12px;
+    margin-bottom: 10px;
+    font-size: 11px;
+  }
+  .spotlight .theatre-heading {
+    flex-shrink: 0;
+  }
+  .spotlight .machine-object,
+  .spotlight .machine-object[data-machine="uncle"] {
+    height: min(480px, calc(100svh - 190px));
+    min-height: 180px;
+    width: min(100%, calc((100svh - 190px) * 0.72));
+    max-width: 350px;
+    flex-shrink: 0;
+  }
+  .spotlight .theatre-caption {
+    flex-shrink: 0;
+  }
+}

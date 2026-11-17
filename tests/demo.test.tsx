@@ -18,6 +18,16 @@ vi.mock("framer-motion", async (importOriginal) => ({
 }));
 beforeEach(() => {
   preference.reduce = false;
+  vi.mocked(window.matchMedia).mockImplementation((query) => ({
+    matches: false,
+    media: query,
+    onchange: null,
+    addListener: vi.fn(),
+    removeListener: vi.fn(),
+    addEventListener: vi.fn(),
+    removeEventListener: vi.fn(),
+    dispatchEvent: vi.fn(),
+  }));
   vi.useFakeTimers();
 });
 afterEach(() => {
@@ -206,4 +216,112 @@ it("handles an empty catalogue without starting a dispense", () => {
   } finally {
     machines[0].products.push(...saved);
   }
+});
+
+function narrowLayout() {
+  vi.mocked(window.matchMedia).mockImplementation((query) => ({
+    matches: query === "(max-width: 700px)",
+    media: query,
+    onchange: null,
+    addListener: vi.fn(),
+    removeListener: vi.fn(),
+    addEventListener: vi.fn(),
+    removeEventListener: vi.fn(),
+    dispatchEvent: vi.fn(),
+  }));
+}
+for (const machine of machines)
+  it(`narrow ${machine.short}: stage is focused before drop, then reveal, then replay`, async () => {
+    narrowLayout();
+    render(<Demo />);
+    choose(machine.name);
+    fireEvent.click(screen.getByRole("button", { name: "Dispense" }));
+    const stage = screen.getByRole("region", {
+      name: "Virtual dispensing stage",
+    });
+    expect(stage.classList.contains("spotlight")).toBe(true);
+    expect(document.activeElement).toBe(stage);
+    expect(document.body.style.overflow).toBe("hidden");
+    expect(
+      stage.querySelector(".machine-object")?.classList.contains("preparing"),
+    ).toBe(true);
+    await advance(179);
+    expect(stage.querySelector(".travelling-product")).toBeNull();
+    expect(screen.queryByRole("dialog")).toBeNull();
+    await advance(1);
+    expect(
+      stage.querySelector(".machine-object")?.classList.contains("dispensing"),
+    ).toBe(true);
+    await advance(2200);
+    expect(
+      stage.querySelector(".machine-object")?.classList.contains("ready"),
+    ).toBe(true);
+    expect(screen.queryByRole("dialog")).toBeNull();
+    await advance(850);
+    expect(screen.getByRole("dialog")).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "Replay selection" }));
+    expect(screen.queryByRole("dialog")).toBeNull();
+    expect(document.activeElement).toBe(stage);
+    expect(stage.querySelector(".travelling-product")).toBeNull();
+    await advance(180);
+    await advance(2200);
+    await advance(850);
+    expect(screen.getByRole("dialog")).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "Try another" }));
+    await advance(20);
+    fireEvent.click(screen.getByRole("button", { name: "Dispense" }));
+    expect(document.activeElement).toBe(stage);
+  });
+for (const elapsed of [0, 180, 2380])
+  it(`narrow cancellation at ${elapsed}ms prevents stale drops and reveals`, async () => {
+    narrowLayout();
+    render(<Demo />);
+    choose(machines[0].name);
+    fireEvent.click(screen.getByRole("button", { name: "Dispense" }));
+    if (elapsed) {
+      await advance(180);
+      if (elapsed > 180) await advance(elapsed - 180);
+    }
+    fireEvent.click(screen.getByRole("button", { name: "Cancel / switch" }));
+    choose(machines[1].name);
+    await advance(5000);
+    expect(screen.queryByRole("dialog")).toBeNull();
+    expect(document.body.style.overflow).toBe("");
+    expect(screen.getByRole("button", { name: "Dispense" })).toBeTruthy();
+  });
+it("narrow reduced motion shows a still stage before revealing, without scrolling", async () => {
+  narrowLayout();
+  preference.reduce = true;
+  render(<Demo />);
+  choose(machines[0].name);
+  fireEvent.click(screen.getByRole("button", { name: "Dispense" }));
+  expect(document.activeElement).toBe(
+    screen.getByRole("region", { name: "Virtual dispensing stage" }),
+  );
+  await advance(180);
+  expect(screen.queryByRole("dialog")).toBeNull();
+  await advance(100);
+  expect(screen.queryByRole("dialog")).toBeNull();
+  await advance(150);
+  expect(screen.getByRole("dialog")).toBeTruthy();
+});
+
+it("narrow stage keeps keyboard focus on cancellation and Escape cancels preparation", async () => {
+  narrowLayout();
+  render(<Demo />);
+  choose(machines[0].name);
+  fireEvent.click(screen.getByRole("button", { name: "Dispense" }));
+  const stage = screen.getByRole("region", {
+    name: "Virtual dispensing stage",
+  });
+  fireEvent.keyDown(stage, { key: "Tab" });
+  expect(document.activeElement).toBe(
+    screen.getByRole("button", { name: "Cancel / switch" }),
+  );
+  fireEvent.keyDown(document.activeElement!, { key: "Escape" });
+  await advance(5000);
+  expect(screen.queryByRole("dialog")).toBeNull();
+  expect(
+    screen.getByRole("button", { name: "Explore Polar Puffs & Cakes machine" }),
+  ).toBeTruthy();
 });
