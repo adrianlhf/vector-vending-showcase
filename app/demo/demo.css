@@ -1185,3 +1185,18 @@
     height: 76px;
   }
 }
+
+/* Ambient artwork is visual only, including generated pseudo-elements. */
+.demo-page::before,
+.demo-page::after,
+.product-dialog::before,
+.product-dialog::after,
+.choice-halo,
+.theatre-glow,
+.virtual-path::before,
+.virtual-shelf,
+.travelling-product,
+.tray-light,
+.reveal-orbit {
+  pointer-events: none;
+}

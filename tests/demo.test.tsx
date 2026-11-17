@@ -33,6 +33,7 @@ beforeEach(() => {
 afterEach(() => {
   cleanup();
   vi.useRealTimers();
+  vi.unstubAllGlobals();
 });
 const advance = async (ms: number) => {
   await act(async () => {
@@ -399,3 +400,59 @@ it("exposes the full catalogue and resets list scrolling when changing formats o
   ).toBe(5);
   expect(screen.queryByRole("button", { name: "Mini cakes" })).toBeNull();
 });
+
+for (const narrow of [false, true])
+  for (const machine of machines)
+    it(`mouse catalogue loop: ${machine.short}, ${narrow ? "narrow" : "desktop"}`, async () => {
+      if (narrow) narrowLayout();
+      // React Testing Library's microtask-drain wrapper detects Jest's timer
+      // API; expose the equivalent Vitest advance function for this suite.
+      vi.stubGlobal("jest", { advanceTimersByTime: vi.advanceTimersByTime });
+      const user = userEvent.setup({
+        delay: null,
+        advanceTimers: vi.advanceTimersByTime,
+      });
+      render(<Demo />);
+      await user.click(
+        screen.getByRole("button", { name: `Explore ${machine.name} machine` }),
+      );
+      for (const product of machine.products) {
+        await user.click(
+          screen.getByRole("button", { name: `Select ${product.name}` }),
+        );
+        expect(
+          screen
+            .getByRole("button", { name: `Select ${product.name}` })
+            .getAttribute("aria-pressed"),
+        ).toBe("true");
+        await user.click(screen.getByRole("button", { name: "Dispense" }));
+        if (narrow) await advance(180);
+        await advance(2200);
+        await advance(850);
+        const hero = screen.getByRole("dialog");
+        expect(
+          within(hero).getByRole("heading", {
+            name: (n) => n.startsWith(product.name),
+          }),
+        ).toBeTruthy();
+        expect(
+          within(hero)
+            .getByRole("img", { name: product.name })
+            .getAttribute("src"),
+        ).toBe("/assets/" + product.image);
+        await user.click(
+          within(hero).getByRole("button", { name: "Try another" }),
+        );
+        await advance(20);
+      }
+      await user.click(screen.getByRole("button", { name: "Switch machines" }));
+      const other = machines.find((m) => m.id !== machine.id)!;
+      await user.click(
+        screen.getByRole("button", { name: `Explore ${other.name} machine` }),
+      );
+      expect(
+        screen.getByRole("button", {
+          name: `Select ${other.products[0].name}`,
+        }),
+      ).toBeTruthy();
+    });

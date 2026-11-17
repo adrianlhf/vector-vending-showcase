@@ -119,3 +119,13 @@ The preview now includes **24 products: 19 Polar and 5 Uncle Lee**, with **Rainb
 ### Independent prior-23-item QA (reported by Jarvis)
 
 At **400 × 575 CSS pixels**, layout, category counts (**8 slices / 4 whole rolls and blocks / 7 minis**), Cocoa Hazelnut, Three Layer and Yam hero flows, and absence of stage overflow passed. These were independent checks of the prior 23-item preview, not rendered verification of the new Rainbow addition in this VS Code session. True touch remains unverified. Production is unchanged; feature-preview deployment only.
+
+## Homepage selector collision correction — 18 November 2026
+
+Independent QA of `f81373c1` confirmed that the homepage's generic `.uncle:after` gradient also matched `.demo-page.uncle` and `.product-dialog.uncle`. Its full-size interactive pseudo-element darkened the demo and intercepted mouse selection, including Rainbow Chocolate, while keyboard activation worked.
+
+The original Uncle Lee photo-card colour, image and gradient rules are now scoped to `.brand-card.uncle`; the existing homepage collage-specific styles are scoped to `.brand-collage` where they use partner modifiers. The intended homepage photo gradient is retained with its original stops. Photography gradients, orbit artwork and all decorative demo overlay/pseudo-element layers explicitly use `pointer-events: none`. Functional controls and modal behaviour are unchanged. All 24 catalogue records, descriptions, public sources and source-image files are unchanged.
+
+Regression coverage now includes CSSOM selector matching to ensure that the homepage gradient matches its photo card but neither demo wrapper nor hero dialog, and explicit non-interactive decoration checks. The selector test was also run against the pre-fix stylesheet and correctly failed. Mouse-event tests use user-event clicks across all five Uncle Lee and all 19 Polar products, in desktop and narrow-layout modes, and exercise selection → dispense → matching hero image → Try another → switch machines. All 75 tests pass, alongside the production build/TypeScript check.
+
+These are DOM/CSSOM and mouse-event tests, not browser geometry or hit-testing measurements. Browser inventory in this VS Code session still returned `browsers: []` and `Browsers: Error: The browser access host is unavailable`. Independent rendered mouse and touch verification remains pending. Feature-branch preview deployment only; production unchanged.
